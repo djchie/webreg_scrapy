@@ -1,3 +1,6 @@
+# In case you need XML testing
+# http://chris.photobooks.com/xml/default.htm
+
 import scrapy
 import re
 import string
@@ -12,9 +15,9 @@ class CourseSpider(scrapy.Spider):
     # currentYearTerm = '2015-92'
 
     def start_requests(self):
-        return [FormRequest(url="https://www.reg.uci.edu/perl/WebSoc",
+        yield FormRequest(url="https://www.reg.uci.edu/perl/WebSoc",
                     formdata={'YearTerm': '2015-92', 'Dept': 'COMPSCI'},
-                    callback=self.parse)]
+                    callback=self.parse)
 
     def parse(self, response):
         filename = response.url.split("/")[-2] + '.html'
