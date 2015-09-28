@@ -20,7 +20,7 @@ class DepartmentSpider(scrapy.Spider):
 
         for departmentXML in response.xpath('//select[@name="Dept"]/option'):
             department = DepartmentItem()
-            department['abbreviation'] = departmentXML.xpath('@value').extract()[0].replace(u"\u00A0", " ")
+            department['code'] = departmentXML.xpath('@value').extract()[0].replace(u"\u00A0", " ").strip()
             lastPeriodIndex = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ").rfind('.')
             department['name'] = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ")[lastPeriodIndex + 1:].strip()
             yield department

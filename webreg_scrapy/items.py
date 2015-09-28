@@ -34,6 +34,6 @@ class SessionItem(scrapy.Item):
     pass
 
 class DepartmentItem(scrapy.Item):
-    abbreviation = scrapy.Field()
+    code = scrapy.Field()
     name = scrapy.Field()
     pass
