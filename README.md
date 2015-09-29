@@ -1,11 +1,22 @@
 # Commands to run:
 
-  - scrapy crawl department_scrapy -o departments.json
-    - To crawl departments and store them into departments.json
   - scrapy crawl course_scrapy -o courses.json
     - To crawl courses and store them into courses.json
 
 # TODO:
+
+  - Uci api
+    - Define database
+    - Pipeline information into database
+    - Figure out efficient cron job setup
+      - put everything into one file?
+    - Create a node-express-postgres api
+    - Create a endpoints
+      - course number
+      - course name string
+      - in documentation, say can define more endpoints upon request
+    - Deploy api and database somehow...
+    - Format data that enters into database
   
 ## Process:
 

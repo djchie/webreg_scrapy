@@ -25,8 +25,8 @@ class DepartmentSpider(scrapy.Spider):
         #         formdata={'YearTerm': '2015-92', 'Dept': 'SOCECOL'},
         #         callback=self.parse_courses,
         #         meta={
-        #             'departmentCode': 'SOCECOL',
-        #             'departmentName': 'Social Ecology'
+        #             'deptCode': 'SOCECOL',
+        #             'deptName': 'Social Ecology'
         #         })
         for departmentXML in response.xpath('//select[@name="Dept"]/option'):
             department = DepartmentItem()
@@ -39,23 +39,23 @@ class DepartmentSpider(scrapy.Spider):
                     formdata={'YearTerm': '2015-92', 'Dept': department['code']},
                     callback=self.parse_courses,
                     meta={
-                        'departmentCode': department['code'],
-                        'departmentName': department['name']
+                        'deptCode': department['code'],
+                        'deptName': department['name']
                     })
 
     def parse_courses(self, response):
         blueBarCount = 0
         # For testing
-        # print 'DEPARTMENT === ' + response.meta['departmentCode']
+        # print 'DEPARTMENT === ' + response.meta['deptCode']
         # print 'TIME === ' + time.asctime()
         for courseXML in response.xpath('//tr[@bgcolor="#fff0ff"]'):
             course = CourseItem()
-            course['courseNumber'] = re.sub(' +', ' ', courseXML.xpath('td[@class="CourseTitle"]/text()[1]').extract()[0].replace(u"\u00A0", " ").strip()
+            course['number'] = re.sub(' +', ' ', courseXML.xpath('td[@class="CourseTitle"]/text()[1]').extract()[0].replace(u"\u00A0", " ").strip())
             # For testing
-            print 'COURSE NUMBER === ' + course['courseNumber']
-            course['courseName'] = string.capwords(courseXML.xpath('td[@class="CourseTitle"]/font/b/text()').extract()[0])
-            course['departmentName'] = response.meta['departmentName']
-            course['departmentCode'] = response.meta['departmentCode']
+            # print 'COURSE NUMBER === ' + course['number']
+            course['title'] = string.capwords(courseXML.xpath('td[@class="CourseTitle"]/font/b/text()').extract()[0])
+            course['deptName'] = response.meta['deptName']
+            course['deptCode'] = response.meta['deptCode']
 
             sessions = []
             for sessionXML in courseXML.xpath('following-sibling::tr[@valign="top" and count(preceding-sibling::tr[@class="blue-bar"])=' + str(blueBarCount) + ']'):

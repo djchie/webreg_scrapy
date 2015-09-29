@@ -14,6 +14,15 @@ BOT_NAME = 'webreg_scrapy'
 SPIDER_MODULES = ['webreg_scrapy.spiders']
 NEWSPIDER_MODULE = 'webreg_scrapy.spiders'
 
+# Testing Database
+DATABASE = {
+    'drivername': 'postgres',
+    'host': 'localhost',
+    # 'port': '5432',
+    'username': '',
+    'password': '',
+    'database': 'uci_course_development'
+}
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'webreg_scrapy (+http://www.yourdomain.com)'
