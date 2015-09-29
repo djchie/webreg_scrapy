@@ -10,17 +10,22 @@ import scrapy
 class CourseItem(scrapy.Item):
     courseNumber = scrapy.Field()
     courseName = scrapy.Field()
+    departmentName = scrapy.Field()
+    departmentCode = scrapy.Field()
     sessions = scrapy.Field()
     pass
 
 class SessionItem(scrapy.Item):
-    courseCode = scrapy.Field()
-    courseType = scrapy.Field()
+    code = scrapy.Field()
+    type = scrapy.Field()
     section = scrapy.Field()
     units = scrapy.Field()
     instructor = scrapy.Field()
+    instructor2 = scrapy.Field()
     time = scrapy.Field()
-    place = scrapy.Field()
+    time2 = scrapy.Field()
+    location = scrapy.Field()
+    location2 = scrapy.Field()
     final = scrapy.Field()
     maximumEnrollmentAllowed = scrapy.Field()
     currentEnrollmentCount = scrapy.Field()
