@@ -1,5 +1,6 @@
-from sqlalchemy import create_engine, Column, Integer, String, DateTime
+from sqlalchemy import create_engine, Column, Integer, String, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.engine.url import URL
 
 import settings
@@ -16,27 +17,61 @@ def db_connect():
     return create_engine(URL(**settings.DATABASE))
 
 
-def create_courses_table(engine):
+def create_all_tables(engine):
     """"""
     DeclarativeBase.metadata.create_all(engine)
 
 
-class Courses(DeclarativeBase):
-    """Sqlalchemy courses model"""
-    __tablename__ = "courses"
+class Course(DeclarativeBase):
+    """Sqlalchemy course model"""
+    __tablename__ = "course"
 
-    id = Column(Integer, primary_key=True)
-    course_number = Column('course_number', String)
-    course_name = Column('course_name', String)
-    department_name = Column('department_name', String)
-    department_code = Column('department_code', String)
+    id = Column(Integer, primary_key=True, nullable=False)
+    number = Column('number', String, nullable=False)
+    title = Column('title', String, nullable=False)
+    deptName = Column('department_name', String, nullable=False)
+    deptCode = Column('department_code', String, nullable=False)
+    sessions = relationship('Session', backref='course')
 
-class Sessions(DeclarativeBase):
-    """Sqlalchemy sessions model"""
-    __tablename__ = "sessions"
+# DEFINE SESSIONS TABLE
+# MAKE SURE THE RELATIONSHIP IS CORRECT WITH COURSES
+# IMPLEMENT THE INSERTION INTO THE DATABASE
+class Session(DeclarativeBase):
+    """Sqlalchemy session model"""
+    __tablename__ = "session"
 
-    id = Column(Integer, primary_key=True)
-    course_number = Column('course_number', String)
-    course_name = Column('course_name', String)
-    department_name = Column('department_name', String)
-    department_code = Column('department_code', String)
+    id = Column(Integer, primary_key=True, nullable=False)
+    course_id = Column('course_id', Integer, ForeignKey('course.id'), nullable=False)
+    code = Column('code', String, nullable=False)
+    type = Column('type', String)
+    section = Column('section', String)
+    units = Column('units', String)
+    instructor = Column('instructor', String)
+    instructor2 = Column('instructor_2', String)
+    time = Column('time', String)
+    time2 = Column('time_2', String)
+    location = Column('location', String)
+    location2 = Column('location_2', String)
+    final = Column('final', String)
+    maximumEnrollmentAllowed = Column('maximum_enrollment_allowed', Integer)
+    currentEnrollmentCount = Column('current_enrollment_count', String)
+    currentWaitlistCount = Column('current_waitlist_count', String)
+    enrollmentRequests = Column('enrollment_requests', Integer)
+    enrollmentRestrictions = Column('enrollment_restrictions', String)
+    textbookLink = Column('textbook_link', String)
+    courseWebsite = Column('course_website', String)
+    status = Column('status', String)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
