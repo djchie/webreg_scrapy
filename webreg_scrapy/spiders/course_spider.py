@@ -20,14 +20,15 @@ class DepartmentSpider(scrapy.Spider):
                     callback=self.parse_departments)
 
     def parse_departments(self, response):
-        # For testing out a single page
-        yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
-                formdata={'YearTerm': '2015-92', 'Dept': 'SOCECOL'},
-                callback=self.parse_courses,
-                meta={
-                    'deptCode': 'SOCECOL',
-                    'deptName': 'Social Ecology'
-                })
+        # For controlled testing on given departments
+        departments = [{'code': 'MGMT', 'name': 'Management'},
+                       {'code': 'COMPSCI', 'name': 'Computer Science'}]
+        for department in departments:
+            yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
+                              formdata={'YearTerm': '2015-92', 'Dept': department['code']},
+                              callback=self.parse_courses,
+                              meta={'deptCode': department['code'],
+                                    'deptName': department['name']})
         # for departmentXML in response.xpath('//select[@name="Dept"]/option'):
         #     department = DepartmentItem()
         #     department['code'] = departmentXML.xpath('@value').extract()[0].replace(u"\u00A0", " ").strip()
@@ -70,11 +71,23 @@ class DepartmentSpider(scrapy.Spider):
                 # Needed to handle when there's two instructors
                 if len(sessionXML.xpath('td[5]/text()')) == 2:
                     session['instructor2'] = sessionXML.xpath('td[5]/text()').extract()[1].replace(u"\u00A0", " ").strip()
-                session['time'] = sessionXML.xpath('td[6]/text()').extract()[0].replace(u"\u00A0", " ").strip()
-                # Needed to handle when there's two times
-                if len(sessionXML.xpath('td[6]/text()')) == 2:
-                    session['time2'] = sessionXML.xpath('td[6]/text()').extract()[1].replace(u"\u00A0", " ").strip()
 
+                dayTime = sessionXML.xpath('td[6]/text()').extract()[0].replace(u"\u00A0", " ").strip()
+                # Needed to handle when it's just TBA
+                if (dayTime == 'TBA'):
+                    session['day'] = 'TBA'
+                    session['time'] = 'TBA'
+                else:
+                    session['day'] = dayTime[:dayTime.index('   ')]
+                    session['time'] = dayTime[(dayTime.index('   ') + 4):]
+                    # Needed to handle when there's two times
+                    if len(sessionXML.xpath('td[6]/text()')) == 2:
+                        dayTime2 = sessionXML.xpath('td[6]/text()').extract()[1].replace(u"\u00A0", " ").strip()
+                        '================ DAYTIME!!! ================'
+                        print dayTime2
+                        session['day2'] = dayTime2[:dayTime2.index('   ')]
+                        session['time2'] = dayTime2[(dayTime2.index('   ') + 4):]
+                        
                 # Needed to handle when it's just TBA
                 if len(sessionXML.xpath('td[7]/a')) >= 1:
                     session['location'] = sessionXML.xpath('td[7]/a/text()').extract()[0].replace(u"\u00A0", " ").strip()

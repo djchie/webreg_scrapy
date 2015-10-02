@@ -21,6 +21,9 @@ def create_all_tables(engine):
     """"""
     DeclarativeBase.metadata.create_all(engine)
 
+def drop_all_tables(engine):
+    """"""
+    DeclarativeBase.metadata.drop_all(engine)
 
 class Course(DeclarativeBase):
     """Sqlalchemy course model"""
@@ -48,7 +51,9 @@ class Session(DeclarativeBase):
     units = Column('units', String)
     instructor = Column('instructor', String)
     instructor2 = Column('instructor_2', String)
+    day = Column('day', String)
     time = Column('time', String)
+    day2 = Column('day_2', String)
     time2 = Column('time_2', String)
     location = Column('location', String)
     location2 = Column('location_2', String)

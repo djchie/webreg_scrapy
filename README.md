@@ -25,3 +25,9 @@
   - Upload all the information to Parse
     - https://realpython.com/blog/python/web-scraping-with-scrapy-and-mongodb/
 
+## When UCI Changes Data
+  
+  - Change items.py
+  - Change the way course_spider.py parses
+  - Change the models.py to reflect database schema
+  - Change pipelines.py to manage the insertion of new data

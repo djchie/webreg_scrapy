@@ -6,7 +6,7 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
 from sqlalchemy.orm import sessionmaker
-from models import Course, Session, db_connect, create_all_tables
+from models import Course, Session, db_connect, create_all_tables, drop_all_tables
 
 class WebregScrapyPipeline(object):
     """WebregScrapy pipeline for storing scraped items in the database"""
@@ -16,6 +16,8 @@ class WebregScrapyPipeline(object):
         Creates course and session table.
         """
         engine = db_connect()
+        # TODO: Refer to the TODO below to avoid using the line below
+        drop_all_tables(engine)
         create_all_tables(engine)
         self.Session = sessionmaker(bind=engine)
 
@@ -25,7 +27,8 @@ class WebregScrapyPipeline(object):
         This method is called for every item pipeline component.
 
         """
-        
+
+        # TODO: Find a way to update rather than over write all the data
         db_session = self.Session()
 
         course_data = {'number': item['number'], 
