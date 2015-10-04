@@ -1,2 +1,4 @@
 courses.json
-webreg_scrapy/*.pyc
+
+# Python
+*.pyc
