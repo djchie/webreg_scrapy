@@ -33,8 +33,8 @@ class WebregScrapyPipeline(object):
 
         course_data = {'number': item['number'], 
                        'title': item['title'], 
-                       'deptName': item['deptName'], 
-                       'deptCode': item['deptCode']}
+                       'deptTitle': item['deptTitle'], 
+                       'department': item['department']}
         course = Course(**course_data)
 
         sessions_data = item['sessions']

@@ -14,8 +14,28 @@ BOT_NAME = 'webreg_scrapy'
 SPIDER_MODULES = ['webreg_scrapy.spiders']
 NEWSPIDER_MODULE = 'webreg_scrapy.spiders'
 
-# Testing Database
-DATABASE = {
+# Development Database
+DEVELOPMENT_DATABASE = {
+    'drivername': 'postgres',
+    'host': 'localhost',
+    # 'port': '5432',
+    'username': '',
+    'password': '',
+    'database': 'uci_course_development'
+}
+
+# Test Database
+TEST_DATABASE = {
+    'drivername': 'postgres',
+    'host': 'localhost',
+    # 'port': '5432',
+    'username': '',
+    'password': '',
+    'database': 'uci_course_development'
+}
+
+# Production Database
+PRODUCTION_DATABASE = {
     'drivername': 'postgres',
     'host': 'localhost',
     # 'port': '5432',

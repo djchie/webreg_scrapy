@@ -1,7 +1,9 @@
 # Commands to run:
 
-  - scrapy crawl course_scrapy -o courses.json
-    - To crawl courses and store them into courses.json
+  - To crawl courses into database
+    - scrapy crawl course_scrapy  
+  - To crawl courses into database and store them into courses.json
+    - scrapy crawl course_scrapy -o courses.json
 
 # TODO:
 

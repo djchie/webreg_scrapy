@@ -10,8 +10,8 @@ import scrapy
 class CourseItem(scrapy.Item):
     number = scrapy.Field()
     title = scrapy.Field()
-    deptName = scrapy.Field()
-    deptCode = scrapy.Field()
+    deptTitle = scrapy.Field()
+    department = scrapy.Field()
     sessions = scrapy.Field()
     pass
 

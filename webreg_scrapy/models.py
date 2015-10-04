@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.engine.url import URL
 
-import settings
+import sys, settings
 
 
 DeclarativeBase = declarative_base()
@@ -14,7 +14,9 @@ def db_connect():
     Performs database connection using database settings from settings.py.
     Returns sqlalchemy engine instance
     """
-    return create_engine(URL(**settings.DATABASE))
+    print '=================== WHAT ENV IS IT?? ===================='
+    # print sys.argv[sys.argv.length - 1]
+    return create_engine(URL(**settings.DEVELOPMENT_DATABASE))
 
 
 def create_all_tables(engine):
@@ -30,10 +32,10 @@ class Course(DeclarativeBase):
     __tablename__ = "course"
 
     id = Column(Integer, primary_key=True, nullable=False)
+    deptTitle = Column('department_title', String, nullable=False)
+    department = Column('department', String, nullable=False)
     number = Column('number', String, nullable=False)
     title = Column('title', String, nullable=False)
-    deptName = Column('department_name', String, nullable=False)
-    deptCode = Column('department_code', String, nullable=False)
     sessions = relationship('Session', backref='course')
 
 # DEFINE SESSIONS TABLE

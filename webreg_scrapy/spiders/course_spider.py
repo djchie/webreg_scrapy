@@ -27,8 +27,8 @@ class DepartmentSpider(scrapy.Spider):
             yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
                               formdata={'YearTerm': '2015-92', 'Dept': department['code']},
                               callback=self.parse_courses,
-                              meta={'deptCode': department['code'],
-                                    'deptName': department['name']})
+                              meta={'department': department['code'],
+                                    'deptTitle': department['name']})
         # for departmentXML in response.xpath('//select[@name="Dept"]/option'):
         #     department = DepartmentItem()
         #     department['code'] = departmentXML.xpath('@value').extract()[0].replace(u"\u00A0", " ").strip()
@@ -40,23 +40,24 @@ class DepartmentSpider(scrapy.Spider):
         #             formdata={'YearTerm': '2015-92', 'Dept': department['code']},
         #             callback=self.parse_courses,
         #             meta={
-        #                 'deptCode': department['code'],
-        #                 'deptName': department['name']
+        #                 'department': department['code'],
+        #                 'deptTitle': department['name']
         #             })
 
     def parse_courses(self, response):
         blueBarCount = 0
         # For testing
-        # print 'DEPARTMENT === ' + response.meta['deptCode']
+        # print 'DEPARTMENT === ' + response.meta['department']
         # print 'TIME === ' + time.asctime()
         for courseXML in response.xpath('//tr[@bgcolor="#fff0ff"]'):
             course = CourseItem()
-            course['number'] = re.sub(' +', ' ', courseXML.xpath('td[@class="CourseTitle"]/text()[1]').extract()[0].replace(u"\u00A0", " ").strip())
+            departmentNumber = re.sub(' +', ' ', courseXML.xpath('td[@class="CourseTitle"]/text()[1]').extract()[0].replace(u"\u00A0", " ").strip())
+            course['number'] = departmentNumber[(departmentNumber.index(' ') + 1):]
             # For testing
             # print 'COURSE NUMBER === ' + course['number']
             course['title'] = string.capwords(courseXML.xpath('td[@class="CourseTitle"]/font/b/text()').extract()[0])
-            course['deptName'] = response.meta['deptName']
-            course['deptCode'] = response.meta['deptCode']
+            course['deptTitle'] = response.meta['deptTitle']
+            course['department'] = response.meta['department']
 
             sessions = []
             for sessionXML in courseXML.xpath('following-sibling::tr[@valign="top" and count(preceding-sibling::tr[@class="blue-bar"])=' + str(blueBarCount) + ']'):
@@ -87,7 +88,7 @@ class DepartmentSpider(scrapy.Spider):
                         print dayTime2
                         session['day2'] = dayTime2[:dayTime2.index('   ')]
                         session['time2'] = dayTime2[(dayTime2.index('   ') + 4):]
-                        
+
                 # Needed to handle when it's just TBA
                 if len(sessionXML.xpath('td[7]/a')) >= 1:
                     session['location'] = sessionXML.xpath('td[7]/a/text()').extract()[0].replace(u"\u00A0", " ").strip()
