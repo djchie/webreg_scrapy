@@ -20,6 +20,10 @@ class WebregScrapyPipeline(object):
         drop_all_tables(engine)
         create_all_tables(engine)
         self.Session = sessionmaker(bind=engine)
+        
+        # Instead of dropping tables, it just deletes all the rows
+        # self.Session().query(Session).delete()
+        # self.Session().query(Course).delete()
 
     def process_item(self, item, spider):
         """Save courses and sessions in the database.
@@ -29,12 +33,14 @@ class WebregScrapyPipeline(object):
         """
 
         # TODO: Find a way to update rather than over write all the data
+        # http://stackoverflow.com/questions/2546207/does-sqlalchemy-have-an-equivalent-of-djangos-get-or-create
         db_session = self.Session()
 
         course_data = {'number': item['number'], 
                        'title': item['title'], 
                        'deptTitle': item['deptTitle'], 
                        'department': item['department']}
+
         course = Course(**course_data)
 
         sessions_data = item['sessions']
@@ -44,6 +50,7 @@ class WebregScrapyPipeline(object):
 
         try:
             db_session.add(course)
+            # db_session.merge(course)
             db_session.commit()
         except:
             db_session.rollback()

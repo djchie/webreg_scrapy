@@ -8,15 +8,8 @@
 # TODO:
 
   - Uci api
-    - Define database
-    - Pipeline information into database
     - Figure out efficient cron job setup
       - put everything into one file?
-    - Create a node-express-postgres api
-    - Create a endpoints
-      - course number
-      - course name string
-      - in documentation, say can define more endpoints upon request
     - Deploy api and database somehow...
     - Format data that enters into database
   
