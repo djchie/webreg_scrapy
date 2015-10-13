@@ -1,7 +1,7 @@
 from twisted.internet import reactor
 from scrapy.crawler import Crawler
 from scrapy import log,signals
-from spiders.course_spider import CourseSpider
+from webreg_scrapy.spiders.course_spider import CourseSpider
 from scrapy.utils.project import get_project_settings
 from apscheduler.schedulers.blocking import BlockingScheduler
 
