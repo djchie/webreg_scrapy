@@ -4,7 +4,9 @@ from scrapy import log,signals
 from webreg_scrapy.spiders.course_spider import CourseSpider
 from scrapy.utils.project import get_project_settings
 from apscheduler.schedulers.blocking import BlockingScheduler
+import logging
 
+logging.basicConfig()
 sched = BlockingScheduler()
 
 @sched.scheduled_job('interval', minutes=3)
