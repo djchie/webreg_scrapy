@@ -3,6 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.engine.url import URL
 from datetime import datetime
+import os
 
 import sys, settings
 
@@ -15,9 +16,13 @@ def db_connect():
     Performs database connection using database settings from settings.py.
     Returns sqlalchemy engine instance
     """
-    # print '=================== WHAT ENV IS IT?? ===================='
-    # print sys.argv[sys.argv.length - 1]
-    return create_engine(URL(**settings.DEVELOPMENT_DATABASE))
+    environment = os.environ.get("SCRAPY_ENV")
+    if (environment == 'production'):
+        return create_engine(URL(**settings.PRODUCTION_DATABASE))
+    elif (environment == 'test'):
+        return create_engine(URL(**settings.TEST_DATABASE))
+    else:
+        return create_engine(URL(**settings.DEVELOPMENT_DATABASE))
 
 
 def create_all_tables(engine):

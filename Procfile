@@ -1,1 +1,1 @@
-clock: python clock.py
+clock: SCRAPY_ENV=production python clock.py 

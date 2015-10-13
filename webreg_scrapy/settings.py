@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 
 # Scrapy settings for webreg_scrapy project
 #
@@ -8,6 +9,8 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 #     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
+
+environment = os.environ.get("SCRAPY_ENV")
 
 BOT_NAME = 'webreg_scrapy'
 
@@ -35,14 +38,9 @@ TEST_DATABASE = {
 }
 
 # Production Database
-PRODUCTION_DATABASE = {
-    'drivername': 'postgres',
-    'host': 'localhost',
-    # 'port': '5432',
-    'username': '',
-    'password': '',
-    'database': 'uci_course_development'
-}
+if (environment == 'production'):
+    PRODUCTION_DATABASE = os.environ['DATABASE_URL']
+
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'webreg_scrapy (+http://www.yourdomain.com)'
