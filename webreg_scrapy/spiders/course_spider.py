@@ -3,6 +3,7 @@ import re
 import string
 import time
 
+
 from scrapy.http import FormRequest, Request
 from webreg_scrapy.items import DepartmentItem, CourseItem, SessionItem
 
@@ -21,34 +22,34 @@ class DepartmentSpider(scrapy.Spider):
 
     def parse_departments(self, response):
         # For controlled testing on given departments
-        departments = [{'code': 'MGMT', 'name': 'Management'},
-                       {'code': 'COMPSCI', 'name': 'Computer Science'}]
-        for department in departments:
-            yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
-                              formdata={'YearTerm': '2015-92', 'Dept': department['code']},
-                              callback=self.parse_courses,
-                              meta={'department': department['code'],
-                                    'deptTitle': department['name']})
-        # for departmentXML in response.xpath('//select[@name="Dept"]/option'):
-        #     department = DepartmentItem()
-        #     department['code'] = departmentXML.xpath('@value').extract()[0].replace(u"\u00A0", " ").strip()
-        #     lastPeriodIndex = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ").rfind('.')
-        #     department['name'] = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ")[lastPeriodIndex + 1:].strip()
-        #     if (department['code'] != 'ALL'):
-        #         # UPDATE POINTS: YearTerm
-        #         yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
-        #             formdata={'YearTerm': '2015-92', 'Dept': department['code']},
-        #             callback=self.parse_courses,
-        #             meta={
-        #                 'department': department['code'],
-        #                 'deptTitle': department['name']
-        #             })
+        # departments = [{'code': 'STATS', 'name': 'Statistics'}]
+        # for department in departments:
+        #     yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
+        #                       formdata={'YearTerm': '2015-92', 'Dept': department['code']},
+        #                       callback=self.parse_courses,
+        #                       meta={'department': department['code'],
+        #                             'deptTitle': department['name']})
+        for departmentXML in response.xpath('//select[@name="Dept"]/option'):
+            department = DepartmentItem()
+            department['code'] = departmentXML.xpath('@value').extract()[0].replace(u"\u00A0", " ").strip()
+            lastPeriodIndex = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ").rfind('.')
+            department['name'] = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ")[lastPeriodIndex + 1:].strip()
+            if (department['code'] != 'ALL'):
+                # UPDATE POINTS: YearTerm
+                yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
+                    formdata={'YearTerm': '2015-92', 'Dept': department['code']},
+                    callback=self.parse_courses,
+                    meta={
+                        'department': department['code'],
+                        'deptTitle': department['name']
+                    })
 
     def parse_courses(self, response):
         blueBarCount = 0
         # For testing
         # print 'DEPARTMENT === ' + response.meta['department']
         # print 'TIME === ' + time.asctime()
+        # print 'NUMBER OF COURSES: ' + str(len(response.xpath('//tr[@bgcolor="#fff0ff"]')))
         for courseXML in response.xpath('//tr[@bgcolor="#fff0ff"]'):
             course = CourseItem()
             departmentNumber = re.sub(' +', ' ', courseXML.xpath('td[@class="CourseTitle"]/text()[1]').extract()[0].replace(u"\u00A0", " ").strip())
@@ -59,12 +60,26 @@ class DepartmentSpider(scrapy.Spider):
             course['deptTitle'] = response.meta['deptTitle']
             course['department'] = response.meta['department']
 
+            # For testing
+            # print 'COURSE TITLE: ' + course['title']
+            # print 'NUMBER OF SESSIONS: ' + str(len(courseXML.xpath('following-sibling::tr[@valign="top" and count(preceding-sibling::tr[@class="blue-bar"])=' + str(blueBarCount) + ']')))
+
             sessions = []
             for sessionXML in courseXML.xpath('following-sibling::tr[@valign="top" and count(preceding-sibling::tr[@class="blue-bar"])=' + str(blueBarCount) + ']'):
+                # print sessionXML.extract()
                 session = SessionItem()
                 session['code'] = sessionXML.xpath('td[1]/text()').extract()[0].replace(u"\u00A0", " ").strip()
+
+                # Handling a special case where the second to last course doesn't have a blue bar element, so the blueBarCount is thrown off
+                # If the session code is off, then we know the missing blue bar bug has occured
+                # When that happens, we just force the finish of the for loop to end the session recording and add the current ones to the course object
+                # We decrement the blueBarCount to account for the missing blue bar element
+                if (not session['code'].isdigit()):
+                    blueBarCount -= 1
+                    break
+
                 # For testing
-                print 'SESSION CODE === ' + session['code']
+                # print 'SESSION CODE === ' + session['code']
                 session['type'] = sessionXML.xpath('td[2]/text()').extract()[0].replace(u"\u00A0", " ").strip()
                 session['section'] = sessionXML.xpath('td[3]/text()').extract()[0].replace(u"\u00A0", " ").strip()
                 session['units'] = sessionXML.xpath('td[4]/text()').extract()[0].replace(u"\u00A0", " ").strip()
@@ -84,8 +99,6 @@ class DepartmentSpider(scrapy.Spider):
                     # Needed to handle when there's two times
                     if len(sessionXML.xpath('td[6]/text()')) == 2:
                         dayTime2 = sessionXML.xpath('td[6]/text()').extract()[1].replace(u"\u00A0", " ").strip()
-                        '================ DAYTIME!!! ================'
-                        print dayTime2
                         session['day2'] = dayTime2[:dayTime2.index('   ')]
                         session['time2'] = dayTime2[(dayTime2.index('   ') + 4):]
 
