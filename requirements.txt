@@ -1,7 +1,3 @@
-python-dev
 libffi-dev
-libssl-dev
-libxml2-dev
-libxslt1-dev
 Scrapy==0.24
 APScheduler==3.0.0
