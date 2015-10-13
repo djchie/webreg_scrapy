@@ -1,3 +1,2 @@
-libffi-devel
-Scrapy==0.24
+Scrapy>=1.0.2
 APScheduler==3.0.0
