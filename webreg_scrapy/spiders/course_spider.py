@@ -21,7 +21,7 @@ class DepartmentSpider(scrapy.Spider):
                     callback=self.parse_departments)
 
     def parse_departments(self, response):
-        For controlled testing on given departments
+        # For controlled testing on given departments
         departments = [{'code': 'STATS', 'name': 'Statistics'}]
         for department in departments:
             yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
