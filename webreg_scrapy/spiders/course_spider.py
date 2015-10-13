@@ -7,7 +7,7 @@ import time
 from scrapy.http import FormRequest, Request
 from webreg_scrapy.items import DepartmentItem, CourseItem, SessionItem
 
-class DepartmentSpider(scrapy.Spider):
+class CourseSpider(scrapy.Spider):
     name = "course_scrapy"
     allowed_domains = ["reg.uci.edu"]
     start_urls = [
