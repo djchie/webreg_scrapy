@@ -1,2 +1,2 @@
-Scrapy>=1.0.2
+Scrapy
 APScheduler==3.0.0
