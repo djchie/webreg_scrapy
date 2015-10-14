@@ -9,9 +9,10 @@
 - Implement APScheduler for periodic jobs on Heroku
   
 ## Process:
-- Execute the department spider to grab updated list of departments
-- Execute a course spider for each department in department list
-- Upload all the information to the PostgreSQL database on another Heroku repo
+- Scraper is hosted on Heroku
+- Executes the department spider to grab updated list of departments
+- Executes a course spider for each department in department list
+- Uploads all the information to the AWS RDS PostgreSQL database
 
 ## When UCI Changes Data:
 - Change items.py

@@ -22,27 +22,27 @@ class CourseSpider(scrapy.Spider):
 
     def parse_departments(self, response):
         # For controlled testing on given departments
-        # departments = [{'code': 'STATS', 'name': 'Statistics'}]
-        # for department in departments:
-        #     yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
-        #                       formdata={'YearTerm': '2015-92', 'Dept': department['code']},
-        #                       callback=self.parse_courses,
-        #                       meta={'department': department['code'],
-        #                             'deptTitle': department['name']})
-        for departmentXML in response.xpath('//select[@name="Dept"]/option'):
-            department = DepartmentItem()
-            department['code'] = departmentXML.xpath('@value').extract()[0].replace(u"\u00A0", " ").strip()
-            lastPeriodIndex = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ").rfind('.')
-            department['name'] = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ")[lastPeriodIndex + 1:].strip()
-            if (department['code'] != 'ALL'):
-                # UPDATE POINTS: YearTerm
-                yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
-                    formdata={'YearTerm': '2015-92', 'Dept': department['code']},
-                    callback=self.parse_courses,
-                    meta={
-                        'department': department['code'],
-                        'deptTitle': department['name']
-                    })
+        departments = [{'code': 'STATS', 'name': 'Statistics'}]
+        for department in departments:
+            yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
+                              formdata={'YearTerm': '2015-92', 'Dept': department['code']},
+                              callback=self.parse_courses,
+                              meta={'department': department['code'],
+                                    'deptTitle': department['name']})
+        # for departmentXML in response.xpath('//select[@name="Dept"]/option'):
+        #     department = DepartmentItem()
+        #     department['code'] = departmentXML.xpath('@value').extract()[0].replace(u"\u00A0", " ").strip()
+        #     lastPeriodIndex = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ").rfind('.')
+        #     department['name'] = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ")[lastPeriodIndex + 1:].strip()
+        #     if (department['code'] != 'ALL'):
+        #         # UPDATE POINTS: YearTerm
+        #         yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
+        #             formdata={'YearTerm': '2015-92', 'Dept': department['code']},
+        #             callback=self.parse_courses,
+        #             meta={
+        #                 'department': department['code'],
+        #                 'deptTitle': department['name']
+        #             })
 
     def parse_courses(self, response):
         blueBarCount = 0
