@@ -1,3 +1,5 @@
+# My attempt at setting a Python scheduler in Heroku
+
 # import scrapy
 # from scrapy.crawler import CrawlerProcess
 # from webreg_scrapy.spiders.course_spider import CourseSpider
@@ -23,13 +25,13 @@
 
 
 
-from twisted.internet import reactor
-from scrapy.crawler import Crawler
-from scrapy import log,signals
-from webreg_scrapy.spiders.course_spider import CourseSpider
-from scrapy.utils.project import get_project_settings
-import logging
-logging.basicConfig()
+# from twisted.internet import reactor
+# from scrapy.crawler import Crawler
+# from scrapy import log,signals
+# from webreg_scrapy.spiders.course_spider import CourseSpider
+# from scrapy.utils.project import get_project_settings
+# import logging
+# logging.basicConfig()
 
 # def run():
 #     spider = CourseSpider()
@@ -51,20 +53,20 @@ logging.basicConfig()
 
 
 
-from apscheduler.schedulers.blocking import BlockingScheduler
+# from apscheduler.schedulers.blocking import BlockingScheduler
 
-sched = BlockingScheduler()
+# sched = BlockingScheduler()
 
-@sched.scheduled_job('interval', seconds=1)
-def timed_job():
-    spider = CourseSpider()
-    settings = get_project_settings()
-    crawler = Crawler(settings)
-    crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
-    crawler.configured
-    crawler.crawl(spider)
-    crawler.start()
-    log.start()
-    reactor.run()
+# @sched.scheduled_job('interval', seconds=1)
+# def timed_job():
+#     spider = CourseSpider()
+#     settings = get_project_settings()
+#     crawler = Crawler(settings)
+#     crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
+#     crawler.configured
+#     crawler.crawl(spider)
+#     crawler.start()
+#     log.start()
+#     reactor.run()
 
-sched.start()
+# sched.start()
