@@ -5,6 +5,7 @@
   - scrapy crawl course_scrapy -o courses.json
 
 # TODO:
+- Set up logging
 - Implement APScheduler for periodic jobs on Heroku
   
 ## Process:
