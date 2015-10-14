@@ -18,6 +18,8 @@ def db_connect():
     """
     environment = os.environ.get("SCRAPY_ENV")
     if (environment == 'production'):
+        print 'WHAT IS THE DATABASE URL???'
+        print settings.PRODUCTION_DATABASE
         return create_engine(URL(settings.PRODUCTION_DATABASE))
     elif (environment == 'test'):
         return create_engine(URL(**settings.TEST_DATABASE))
