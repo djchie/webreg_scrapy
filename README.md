@@ -13,8 +13,7 @@
 
   - Execute the department spider to grab updated list of departments
   - Execute a course spider for each department in department list
-  - Upload all the information to Parse
-    - https://realpython.com/blog/python/web-scraping-with-scrapy-and-mongodb/
+  - Upload all the information to the PostgreSQL database on another Heroku repo
 
 ## When UCI Changes Data
   
