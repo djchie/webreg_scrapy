@@ -2,3 +2,4 @@ cffi
 Scrapy==0.24.0
 APScheduler==3.0.0
 SQLAlchemy==1.0.8
+psycopg2==2.6.1

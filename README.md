@@ -7,11 +7,7 @@
 
 # TODO:
 
-  - Uci api
-    - Figure out efficient cron job setup
-      - put everything into one file?
-    - Deploy api and database somehow...
-    - Format data that enters into database
+  - Implement APScheduler for periodic jobs on Heroku
   
 ## Process:
 
