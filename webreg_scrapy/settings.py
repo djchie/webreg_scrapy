@@ -39,7 +39,7 @@ TEST_DATABASE = {
 
 # Production Database
 if (environment == 'production'):
-    PRODUCTION_DATABASE = os.environ['DATABASE_URL']
+    PRODUCTION_DATABASE = os.environ.get('DATABASE_URL')
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
