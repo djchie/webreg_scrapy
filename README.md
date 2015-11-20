@@ -59,7 +59,7 @@ scrapy crawl course_scrapy -o courses.json
 
 ### Roadmap
 
-View the project roadmap [here](https://github.com/djchie/uci-course-api/issues)
+View the project roadmap [here](https://github.com/djchie/webreg_scrapy/issues)
 
 ## Contributing
 
