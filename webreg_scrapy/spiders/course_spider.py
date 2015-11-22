@@ -22,27 +22,27 @@ class CourseSpider(scrapy.Spider):
 
     def parse_departments(self, response):
         # For controlled testing on given departments
-        # departments = [{'code': 'STATS', 'name': 'Statistics'}]
-        # for department in departments:
-        #     yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
-        #                       formdata={'YearTerm': '2015-92', 'Dept': department['code']},
-        #                       callback=self.parse_courses,
-        #                       meta={'department': department['code'],
-        #                             'deptTitle': department['name']})
-        for departmentXML in response.xpath('//select[@name="Dept"]/option'):
-            department = DepartmentItem()
-            department['code'] = departmentXML.xpath('@value').extract()[0].replace(u"\u00A0", " ").strip()
-            lastPeriodIndex = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ").rfind('.')
-            department['name'] = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ")[lastPeriodIndex + 1:].strip()
-            if (department['code'] != 'ALL'):
-                # UPDATE POINTS: YearTerm
-                yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
-                    formdata={'YearTerm': '2015-92', 'Dept': department['code']},
-                    callback=self.parse_courses,
-                    meta={
-                        'department': department['code'],
-                        'deptTitle': department['name']
-                    })
+        departments = [{'code': 'STATS', 'name': 'Statistics'}]
+        for department in departments:
+            yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
+                              formdata={'YearTerm': '2016-03', 'Dept': department['code']},
+                              callback=self.parse_courses,
+                              meta={'department': department['code'],
+                                    'deptTitle': department['name']})
+        # for departmentXML in response.xpath('//select[@name="Dept"]/option'):
+        #     department = DepartmentItem()
+        #     department['code'] = departmentXML.xpath('@value').extract()[0].replace(u"\u00A0", " ").strip()
+        #     lastPeriodIndex = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ").rfind('.')
+        #     department['name'] = departmentXML.xpath('text()').extract()[0].replace(u"\u00A0", " ")[lastPeriodIndex + 1:].strip()
+        #     if (department['code'] != 'ALL'):
+        #         # UPDATE POINTS: YearTerm
+        #         yield FormRequest("https://www.reg.uci.edu/perl/WebSoc",
+        #             formdata={'YearTerm': '2016-03', 'Dept': department['code']},
+        #             callback=self.parse_courses,
+        #             meta={
+        #                 'department': department['code'],
+        #                 'deptTitle': department['name']
+        #             })
 
     def parse_courses(self, response):
         blueBarCount = 0
@@ -101,7 +101,6 @@ class CourseSpider(scrapy.Spider):
                         dayTime2 = sessionXML.xpath('td[6]/text()').extract()[1].replace(u"\u00A0", " ").strip()
                         session['day2'] = dayTime2[:dayTime2.index('   ')]
                         session['time2'] = dayTime2[(dayTime2.index('   ') + 4):]
-
                 # Needed to handle when it's just TBA
                 if len(sessionXML.xpath('td[7]/a')) >= 1:
                     session['location'] = sessionXML.xpath('td[7]/a/text()').extract()[0].replace(u"\u00A0", " ").strip()
@@ -116,7 +115,6 @@ class CourseSpider(scrapy.Spider):
                     # Handle when there's two professors as well
                 else:
                     session['location'] = sessionXML.xpath('td[7]/text()').extract()[0].replace(u"\u00A0", " ").strip()
-
                 # For some reason, the final part for index 8 is getting skipped over, so skip it for now and
                 # continue on index 8. I think it's just ignoring the <td nowrap="nowrap"></td>
                 # session['final'] = sessionXML.xpath('td[8]/text()').extract()[0].replace(u"\u00A0", " ")
@@ -126,24 +124,24 @@ class CourseSpider(scrapy.Spider):
                 session['currentEnrollmentCount'] = sessionXML.xpath('td[9]/text()').extract()[0].replace(u"\u00A0", " ").strip()
                 session['currentWaitlistCount'] = sessionXML.xpath('td[10]/text()').extract()[0].replace(u"\u00A0", " ").strip()
                 session['enrollmentRequests'] = sessionXML.xpath('td[11]/text()').extract()[0].replace(u"\u00A0", " ").strip()
-                session['enrollmentRestrictions'] = sessionXML.xpath('td[12]/text()').extract()[0].replace(u"\u00A0", " ").strip()
-
-                if len(sessionXML.xpath('td[13]/a')) == 1:
-                    session['textbookLink'] = sessionXML.xpath('td[13]/a/@href').extract()[0].replace(u"\u00A0", " ").strip()
+                # There's a Nor = Slots reserved for new students at index 12
+                session['enrollmentRestrictions'] = sessionXML.xpath('td[13]/text()').extract()[0].replace(u"\u00A0", " ").strip()
+                if len(sessionXML.xpath('td[14]/a')) == 1:
+                    session['textbookLink'] = sessionXML.xpath('td[14]/a/@href').extract()[0].replace(u"\u00A0", " ").strip()
                 else:
                     session['textbookLink'] = ""
 
-                if len(sessionXML.xpath('td[14]/a')) == 1:
-                    session['courseWebsite'] = sessionXML.xpath('td[14]/a/@href').extract()[0].replace(u"\u00A0", " ").strip()
+                if len(sessionXML.xpath('td[15]/a')) == 1:
+                    session['courseWebsite'] = sessionXML.xpath('td[15]/a/@href').extract()[0].replace(u"\u00A0", " ").strip()
                 else:
                     session['courseWebsite'] = ""
 
-                if len(sessionXML.xpath('td[15]/b/font')) == 1:
-                    session['status'] = sessionXML.xpath('td[15]/b/font/text()').extract()[0].replace(u"\u00A0", " ").strip()
-                elif len(sessionXML.xpath('td[15]/font')):
-                    session['status'] = sessionXML.xpath('td[15]/font/text()').extract()[0].replace(u"\u00A0", " ").strip()
+                if len(sessionXML.xpath('td[16]/b/font')) == 1:
+                    session['status'] = sessionXML.xpath('td[16]/b/font/text()').extract()[0].replace(u"\u00A0", " ").strip()
+                elif len(sessionXML.xpath('td[16]/font')):
+                    session['status'] = sessionXML.xpath('td[16]/font/text()').extract()[0].replace(u"\u00A0", " ").strip()
                 else:
-                    session['status'] = sessionXML.xpath('td[15]/text()').extract()[0].replace(u"\u00A0", " ").strip()
+                    session['status'] = sessionXML.xpath('td[16]/text()').extract()[0].replace(u"\u00A0", " ").strip()
 
                 sessions.append(session)
             course['sessions'] = sessions
